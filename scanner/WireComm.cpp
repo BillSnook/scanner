@@ -41,7 +41,8 @@ void WireComm::setupForWireComm( bool beMaster ) {
 		Serial.println(" - setupForWireComm as master");		// print debug info
 		Wire.begin();								// join i2c bus as master
 	} else {
-		Serial.println(" - setupForWireComm as slave at address 8");		// print debug info
+		Serial.print(" - setupForWireComm as slave at address ");		// print debug info
+		Serial.println( I2C_SLAVE_ADDRESS);		// print debug info
 		Wire.begin( I2C_SLAVE_ADDRESS );			// join i2c bus as slave with address #8
 		Wire.onReceive(receiveEvent);				// register receive event for writes from master
 		Wire.onRequest(requestEvent);				// register request event for read to master
@@ -89,6 +90,7 @@ void WireComm::runWireComm() {
 		// The slave can send more than we request and we ignore it, but if it sends less, we get 0x255 fillers at the end
 		if ( Wire.available() > 0 ) {	// however many slave sends, we do not seem to get more than we requested
 			Serial.println("runWireComm with data available");		// print debug info
+			Serial.print("-");    // print the valid characters
 			while (Wire.available()) {	// slave may send less than requested
 										//  but we seem to not accept more than we requested
 				char c = Wire.read();	// receive a byte as character
@@ -99,7 +101,7 @@ void WireComm::runWireComm() {
 //				Serial.print(" ");        // print the character
 //				Serial.println(n);        // print the character
 			}
-			Serial.println("");			// print an end of line
+			Serial.println("-");			// print an end of line
 		}
 //	} else {
 		
@@ -108,11 +110,11 @@ void WireComm::runWireComm() {
 
 // MARK: These slave callback routines are to handle writes and reads from the master
 
-// function that executes whenever data is requested by a master when it requests data
+// function that executes whenever data is requested by a master when it reads data
 // this function is registered as an event, see setup()
 static void WireComm::requestEvent() {
-	Serial.println("requestEvent, sending 'hello world....', 15 characters");	// debug info
-	Wire.write("hello world....");			// respond with message with many bytes
+	Serial.println("Got requestEvent, sending 'HELLO', 5 character");	// debug info
+	Wire.write("HELLO");			// respond with message with many bytes
 	
 	// Check mode then respond with appropriate data
 }
@@ -120,7 +122,7 @@ static void WireComm::requestEvent() {
 // function that executes whenever data is received from master when it writes
 // this function is registered as an event, see setup()
 static void WireComm::receiveEvent( int howMany ) {
-	Serial.print("receiveEvent, howMany: ");	// debug info
+	Serial.print("Got receiveEvent to accept write, howMany: ");	// debug info
 	Serial.println(howMany);	// debug info
 	while (0 < Wire.available()) {	// loop through all but the last
 		char c = Wire.read();		// receive byte as a character
@@ -129,7 +131,6 @@ static void WireComm::receiveEvent( int howMany ) {
 		// Accumulate bytes into command, execute it
 	}
 //	int x = Wire.read();			// receive byte as an integer
-//	Serial.println(x);				// print the last number and then end of line
-	Serial.println();				// print the last number and then end of line
+	Serial.println( "." );				// print the end of line
 }
 

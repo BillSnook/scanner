@@ -49,7 +49,7 @@ void setup() {
 	ultrasonic.setupForUltrasonic();
 
 	wireComm = WireComm();
-//	wireComm.setupForWireComm( true );	// true for master, false for slave
+	wireComm.setupForWireComm( false );	// true for master, false for slave
 
 	stringComplete = false;
 
@@ -110,14 +110,14 @@ void serialEvent() {
 					continue;
 					
 					
-				case 'm':
-					wireComm.setupForWireComm( true );
-					continue;
-					
-				case 'v':
-					wireComm.setupForWireComm( false );
-					continue;
-					
+//				case 'm':
+//					wireComm.setupForWireComm( true );
+//					continue;
+//					
+//				case 'v':
+//					wireComm.setupForWireComm( false );
+//					continue;
+//					
 				case 'r':								// buffer size is 32
 					wireComm.readWireComm( 20 );		// We never get more than requested, we can get less
 					continue;
