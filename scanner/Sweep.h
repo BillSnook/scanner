@@ -40,7 +40,7 @@ class Sweep {
 
 public:
 	bool			isRunning;
-	bool			isMeasuring;
+	int				sweepType;
 
 	explicit Sweep();
 	
@@ -53,10 +53,11 @@ public:
 	
 	void	startSweep();
 	void	runSweep();
+	
 	void	startScan();
+	void	startPingTrack();
 	void	runScan();
 	
-//	void	delay( int toDelay );
 };
 
 #endif // Sweep_h

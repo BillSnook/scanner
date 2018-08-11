@@ -38,21 +38,20 @@ void WireComm::setupForWireComm( bool beMaster ) {
 	isSetup = true;									// only done once
 	isMaster = beMaster;
 	if ( isMaster ) {
-		Serial.println(" - setupForWireComm as master");		// print debug info
+		Serial.println(" - setupForWireComm as I2C master");		// print debug info
 		Wire.begin();								// join i2c bus as master
 	} else {
-		Serial.print(" - setupForWireComm as slave at address ");		// print debug info
+		Serial.print(" - setupForWireComm as I2C slave at address ");		// print debug info
 		Serial.println( I2C_SLAVE_ADDRESS);		// print debug info
 		Wire.begin( I2C_SLAVE_ADDRESS );			// join i2c bus as slave with address #8
 		Wire.onReceive(receiveEvent);				// register receive event for writes from master
 		Wire.onRequest(requestEvent);				// register request event for read to master
 	}
-
 }
 
 void WireComm::resetForWireComm() {
 	
-	
+	Wire.end();										// Quit i2c bus
 }
 
 // MARK: These routines are effectively only for the master, to send to and initiate receiving data from a slave
@@ -104,7 +103,7 @@ void WireComm::runWireComm() {
 			Serial.println("-");			// print an end of line
 		}
 //	} else {
-		
+//		// Handle async commands run from receive or request events?
 	}
 }
 

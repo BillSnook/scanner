@@ -15,7 +15,7 @@
 class Ultrasonic {
 	
 private:
-	int				_pin;		// Arduino pin connected with SIG pin of Ultrasonic
+	int				controlPin;		// Arduino pin connected with SIG pin of Ultrasonic
 	long			duration;	// the Pulse time received;
 	unsigned long	previousMillis;				// will store last time LED was updated
 	long			interval;					// blink interval (milliseconds)
@@ -28,7 +28,7 @@ public:
 	
 	bool			setupForUltrasonic();
 	void 			measure();
-	void			makeMeasurement();
+	long			makeMeasurement();
 
 private:
 	void 			distanceMeasure(void);

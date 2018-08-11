@@ -14,16 +14,30 @@
 
 #include <Arduino.h>
 
+//	----	----	----	----
+
+//	Enable I2C functionality and test commands
+// #define I2C_ENABLED
+
+//	----	----	----	----
+
 #include "LEDs.h"
 #include "Sweep.h"
 #include "Ultrasonic.h"
-#include "WireComm.h"
 
+#ifdef I2C_ENABLED
+#include "WireComm.h"
+#endif	// I2C_ENABLED
+
+//	----	----	----	----
 
 LEDs			leds;
 Ultrasonic		ultrasonic;
 Sweep			sweep;
-WireComm		wireComm;
+
+#ifdef I2C_ENABLED
+WireComm		wireComm;			// I2C functions and test commands
+#endif	// I2C_ENABLED
 
 
 String			inputString;		// a String to hold incoming data
@@ -36,7 +50,7 @@ void setup() {
 	while(!Serial) {}	// Wait for it to be ready
 
 	inputString = "";
-	inputString.reserve(200);	// reserve 200 bytes for the inputString
+	inputString.reserve(200);	// reserve 200 bytes for the command inputString
 	Serial.println( "" );
 
 	leds = LEDs();
@@ -48,8 +62,10 @@ void setup() {
 	ultrasonic = Ultrasonic();
 	ultrasonic.setupForUltrasonic();
 
+#ifdef I2C_ENABLED
 	wireComm = WireComm();
-	wireComm.setupForWireComm( false );	// true for master, false for slave
+	//	wireComm.setupForWireComm( false );	// true for master, false for slave
+#endif	// I2C_ENABLED
 
 	stringComplete = false;
 
@@ -73,7 +89,9 @@ void loop() {
 
 	sweep.checkSweep();
 	
+#ifdef I2C_ENABLED
 	wireComm.runWireComm();
+#endif	// I2C_ENABLED
 }
 
 // SerialEvent occurs whenever a new data comes in the hardware serial RX. This
@@ -109,23 +127,33 @@ void serialEvent() {
 					sweep.startScan();
 					continue;
 					
-					
-//				case 'm':
-//					wireComm.setupForWireComm( true );
-//					continue;
-//					
-//				case 'v':
-//					wireComm.setupForWireComm( false );
-//					continue;
-//					
-				case 'r':								// buffer size is 32
-					wireComm.readWireComm( 20 );		// We never get more than requested, we can get less
+				case 'v':
+					sweep.startPingTrack();
 					continue;
 					
 				case 'w':
-					wireComm.writeWireComm( "Data" );
+					sweep.startScan();
 					continue;
 					
+//		I2C test commands
+#ifdef I2C_ENABLED
+//				case 'm':
+//					wireComm.setupForWireComm( true );
+//					continue;
+//
+//				case 'v':
+//					wireComm.setupForWireComm( false );
+//					continue;
+//
+//				case 'r':								// buffer size is 32
+//					wireComm.readWireComm( 20 );		// We never get more than requested, we can get less
+//					continue;
+//
+//				case 'w':
+//					wireComm.writeWireComm( "Data" );
+//					continue;
+#endif	// I2C_ENABLED
+
 				default:
 					break;
 			}
