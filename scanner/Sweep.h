@@ -22,6 +22,8 @@
 
 #include <Servo.h>
 
+#define ReadingsMax		19
+
 class Sweep {
 	
 	int				sweepPin;					// the number of the PWM pin for the servo
@@ -37,6 +39,8 @@ class Sweep {
 	bool			isInitialized;
 	
 	Servo			myservo;  // create servo object to control a servo
+	
+	long			readings[ReadingsMax];
 
 public:
 	bool			isRunning;
